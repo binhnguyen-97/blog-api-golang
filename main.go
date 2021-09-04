@@ -1,13 +1,26 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"blog-api-golang/config"
+	"blog-api-golang/db"
+	"blog-api-golang/routers"
+	"context"
+	"time"
+)
 
 func main() {
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	// Get config from yaml and process env file
+	config.GetVariableConfig()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	// Connect to mongodb
+	db.ConnectToDatabase(ctx)
+
+	defer db.Disconnect(ctx)
+
+	routers.InitRouter().Run(config.Config.PORT)
 }
