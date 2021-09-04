@@ -14,6 +14,7 @@ type configStruct struct {
 	ARTICLE_COLLECTION_NAME string
 	WRITER_COLLECTION_NAME  string
 	USER_COLLECTION_NAME    string
+	JWT_SECRET_KEY          string
 }
 
 var Config configStruct
@@ -35,6 +36,7 @@ func GetVariableConfig() {
 	v.BindEnv("ARTICLE_COLLECTION_NAME")
 	v.BindEnv("WRITER_COLLECTION_NAME")
 	v.BindEnv("USER_COLLECTION_NAME")
+	v.BindEnv("JWT_SECRET_KEY")
 
 	if err := v.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file, %s", err)

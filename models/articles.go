@@ -3,6 +3,7 @@ package models
 import (
 	"blog-api-golang/db"
 	"blog-api-golang/types"
+	"blog-api-golang/utils"
 	"context"
 	"time"
 
@@ -16,54 +17,11 @@ func GetArticles(limit int64, page int) ([]types.ArticleResp, error) {
 
 	defer cancel()
 
-	lookupStage := bson.D{
-		primitive.E{
-			Key: "$lookup",
-			Value: bson.D{
-				primitive.E{
-					Key:   "from",
-					Value: "writer",
-				},
-				primitive.E{
-					Key:   "localField",
-					Value: "author",
-				},
-				primitive.E{
-					Key:   "foreignField",
-					Value: "_id",
-				},
-				primitive.E{
-					Key:   "as",
-					Value: "author",
-				},
-			},
-		},
-	}
+	limitState := utils.GetLimitStage(int(limit))
+	lookupStage := utils.GetLookupStage("writer", "author", "_id", "author")
+	unwindStage := utils.GetUnwindStage("$author", false)
 
-	unwindStage := bson.D{
-		primitive.E{
-			Key: "$unwind",
-			Value: bson.D{
-				primitive.E{
-					Key:   "path",
-					Value: "$author",
-				},
-				primitive.E{
-					Key:   "preserveNullAndEmptyArrays",
-					Value: false,
-				},
-			},
-		},
-	}
-
-	limitStage := bson.D{
-		primitive.E{
-			Key:   "$limit",
-			Value: limit,
-		},
-	}
-
-	cursor, err := db.ArticleCollection().Aggregate(ctx, mongo.Pipeline{lookupStage, limitStage, unwindStage})
+	cursor, err := db.ArticleCollection().Aggregate(ctx, mongo.Pipeline{lookupStage, limitState, unwindStage})
 
 	if err != nil {
 		panic(err)
@@ -76,6 +34,44 @@ func GetArticles(limit int64, page int) ([]types.ArticleResp, error) {
 	}
 
 	return results, err
+}
+
+func GetArticleDetail(id string) ([]types.ArticleResp, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	articleObjectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return []types.ArticleResp{}, err
+	}
+
+	matchCondition := bson.D{
+		primitive.E{
+			Key:   "_id",
+			Value: articleObjectId,
+		},
+	}
+
+	matchState := utils.GetMatchStage(matchCondition)
+	limitState := utils.GetLimitStage(1)
+	lookupStage := utils.GetLookupStage("writer", "author", "_id", "author")
+	unwindStage := utils.GetUnwindStage("$author", false)
+
+	cursor, err := db.ArticleCollection().Aggregate(ctx, mongo.Pipeline{matchState, limitState, lookupStage, unwindStage})
+
+	if err != nil {
+		return []types.ArticleResp{}, err
+	}
+
+	var results []types.ArticleResp
+
+	if err = cursor.All(ctx, &results); err != nil {
+		return []types.ArticleResp{}, err
+	}
+
+	return results, nil
 }
 
 func AddNewArticle(title string, description string, author string) (interface{}, error) {
@@ -95,6 +91,7 @@ func AddNewArticle(title string, description string, author string) (interface{}
 		Description: description,
 		Author:      authorId,
 		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	insertResult, err := articleCollection.InsertOne(ctx, article)
@@ -127,6 +124,48 @@ func DeleteArticle(id string) error {
 				},
 			},
 		)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func UpdateArticle(id string, title string, description string, author string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
+	defer cancel()
+
+	articleId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
+
+	authorId, err := primitive.ObjectIDFromHex(author)
+
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{"_id": articleId}
+	update := bson.D{
+		primitive.E{
+			Key: "$set",
+			Value: bson.M{
+				"title":       title,
+				"description": description,
+				"author":      authorId,
+				"updatedAt":   time.Now(),
+			},
+		},
+	}
+
+	_, err = db.ArticleCollection().UpdateOne(
+		ctx,
+		filter,
+		update,
+	)
+
 	if err != nil {
 		return err
 	}

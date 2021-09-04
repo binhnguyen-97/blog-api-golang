@@ -12,4 +12,5 @@ type Article struct {
 	Author      primitive.ObjectID `bson:"author" json:"-"`
 	Description string             `bson:"description" json:"description"`
 	CreatedAt   time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdatedAt   time.Time          `bson:"updatedAt" json:"updatedAt"`
 }

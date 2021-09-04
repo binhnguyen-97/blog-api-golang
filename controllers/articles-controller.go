@@ -27,13 +27,21 @@ func GetAllArticlesHandler(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage(err.Error()))
-	} else {
-		c.JSON(http.StatusOK, types.ListArticleResp{Status: "success", Data: data})
+		return
 	}
+	c.JSON(http.StatusOK, types.ListArticleResp{Status: "success", Data: data})
 }
 
 func GetArticleDetailHandler(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, "Place  holder")
+	articleId := c.Param("id")
+
+	article, err := models.GetArticleDetail(articleId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.GetErrorMessage(err.Error()))
+		return
+	}
+	c.JSON(http.StatusAccepted, utils.GetSuccessMessage(article[0]))
 }
 
 func PostArticleHandler(c *gin.Context) {
@@ -47,13 +55,35 @@ func PostArticleHandler(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage(err.Error()))
+		return
 	}
 
 	c.JSON(http.StatusCreated, result)
 }
 
 func PutArticleHandler(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, "Place  holder")
+	articleId := c.Param("id")
+
+	var updateArticleRequest types.InsertArticleRequest
+
+	if c.Bind(&updateArticleRequest) != nil {
+		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage("Invaid request body"))
+		return
+	}
+
+	err := models.UpdateArticle(
+		articleId,
+		updateArticleRequest.Title,
+		updateArticleRequest.Description,
+		updateArticleRequest.Author,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.GetErrorMessage(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusAccepted, utils.GetSuccessMessage("Update success"))
 }
 
 func DeleteArticleHandler(c *gin.Context) {
@@ -63,7 +93,7 @@ func DeleteArticleHandler(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.GetErrorMessage(err.Error()))
-	} else {
-		c.JSON(http.StatusAccepted, utils.GetSuccessMessage("Deleted successfully"))
+		return
 	}
+	c.JSON(http.StatusAccepted, utils.GetSuccessMessage("Deleted successfully"))
 }

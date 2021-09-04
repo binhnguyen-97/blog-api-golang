@@ -12,11 +12,19 @@ type ArticleResp struct {
 	Author      Writer             `bson:"author" json:"author"`
 	Description string             `bson:"description" json:"description"`
 	CreatedAt   time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdateAt    time.Time          `bson:"updatedAt" json:"updatedAt"`
 }
 
 type ListArticleResp struct {
 	Status string        `json:"status"`
 	Data   []ArticleResp `json:"data"`
+}
+
+type AuthenticateResp struct {
+	Email        string `json:"email"`
+	Name         string `json:"name"`
+	PrivateToken string `json:"privateToken"`
+	Role         string `json:"role"`
 }
 
 type ErrorRespone struct {
