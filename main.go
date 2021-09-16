@@ -1,6 +1,7 @@
 package main
 
 import (
+	"blog-api-golang/cache"
 	"blog-api-golang/config"
 	"blog-api-golang/db"
 	"blog-api-golang/routers"
@@ -21,6 +22,10 @@ func main() {
 	db.ConnectToDatabase(ctx)
 
 	defer db.Disconnect(ctx)
+
+	cache.Connect()
+
+	defer cache.Close()
 
 	routers.InitRouter().Run(config.Config.Port)
 }

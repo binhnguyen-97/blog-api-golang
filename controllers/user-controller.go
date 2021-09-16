@@ -1,10 +1,13 @@
 package controllers
 
 import (
+	"blog-api-golang/cache"
 	"blog-api-golang/models"
+	"blog-api-golang/services"
 	"blog-api-golang/types"
 	"blog-api-golang/utils"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -69,8 +72,26 @@ func CreateAccountHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, createdUser)
+	mailList := []string{createdUser.Email}
+	otp := utils.OTPGenerator()
 
+	if ok := cache.SetValue(createdUser.Email, otp, time.Minute*5); !ok {
+		c.JSON(http.StatusBadRequest, utils.GetErrorMessage("Error when generate OTP"))
+	}
+
+	mailService := services.CreateNewMail(mailList, "Welcome to The Bidu family")
+
+	err = mailService.SendMail("template/register.html", types.RegisterTemplateItems{
+		Email: createdUser.Email,
+		OTP:   otp,
+	})
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.GetErrorMessage("Sent OTP Fail with Error "+err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusCreated, createdUser)
 }
 
 func GetUserInfoHandler(c *gin.Context) {

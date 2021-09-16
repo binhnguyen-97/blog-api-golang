@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      h3 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+      }
+      .message {
+        color: rgba(000, 000, 000, 0.8);
+        margin-bottom: 1rem;
+      }
+      .otp {
+        width: 100%;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 0.8em;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Welcome {{.Email}} to The Bidu Family</h3>
+    <p class="message">
+      This is your OTP to active your account. Thanks you for joining us!
+    </p>
+    <p class="otp">{{.OTP}}</p>
+  </body>
+</html>

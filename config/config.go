@@ -23,6 +23,17 @@ type configStruct struct {
 		SecretKey  string        `mapstructure:"secret_key"`
 		ExpireTime time.Duration `mapstructure:"expire_time"`
 	}
+	MailService struct {
+		Email    string `mapstructure:"email"`
+		Password string `mapstructure:"password"`
+		Host     string `mapstructure:"host"`
+		Port     int    `mapstructure:"port"`
+	} `mapstructure:"mail_service"`
+	Redis struct {
+		Host     string `mapstructure:"host"`
+		Password string `mapstructure:"password"`
+		DB       int    `mapstructure:"db"`
+	} `mapstructure:"redis"`
 }
 
 var Config configStruct
@@ -46,7 +57,4 @@ func GetVariableConfig() {
 	if err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
-
-	log.Print(Config)
-
 }
