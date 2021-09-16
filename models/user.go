@@ -59,3 +59,23 @@ func GetUserInfo(email string) (types.User, error) {
 
 	return userInfo, nil
 }
+
+func GetAllUser() ([]types.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+
+	defer cancel()
+
+	cursor, err := db.UserCollection().Find(ctx, bson.D{})
+
+	if err != nil {
+		return []types.User{}, err
+	}
+
+	var results []types.User
+
+	if err = cursor.All(ctx, &results); err != nil {
+		return []types.User{}, err
+	}
+
+	return results, nil
+}

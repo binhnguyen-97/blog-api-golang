@@ -8,42 +8,39 @@ import (
 )
 
 type configStruct struct {
-	PORT                    string
-	MONGODB_URL             string
-	DATABASE_NAME           string
-	ARTICLE_COLLECTION_NAME string
-	WRITER_COLLECTION_NAME  string
-	USER_COLLECTION_NAME    string
-	JWT_SECRET_KEY          string
+	PORT    string `mapstructure:"port"`
+	MONGODB struct {
+		URL      string `mapstructure:"url"`
+		DATABASE string `mapstructure:"database"`
+	} `mapstructure:"mongodb"`
+	COLLECTIONS struct {
+		ARTICLE string `mapstructure:"article"`
+		WRITER  string `mapstructure:"writer"`
+		USER    string `mapstructure:"user"`
+	} `mapstructure:"collections"`
+	JWT_SECRET_KEY string `mapstructure:"jwt_token"`
 }
 
 var Config configStruct
 
 // GetVariableConfig: func that get variable from env and parse it to your project
 func GetVariableConfig() {
-	v := viper.New()
-	v.SetConfigName("blog-api-go-env")
-	v.AddConfigPath(".")
-	v.AddConfigPath("../")
-	v.SetConfigType("yaml")
+	viper.SetConfigName("blog-api-go-env")
+	viper.AddConfigPath("./")
+	viper.AddConfigPath("../")
+	viper.SetConfigType("yaml")
 
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
-	v.BindEnv("PORT")
-	v.BindEnv("MONGODB_URL")
-	v.BindEnv("DATABASE_NAME")
-	v.BindEnv("ARTICLE_COLLECTION_NAME")
-	v.BindEnv("WRITER_COLLECTION_NAME")
-	v.BindEnv("USER_COLLECTION_NAME")
-	v.BindEnv("JWT_SECRET_KEY")
-
-	if err := v.ReadInConfig(); err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		log.Fatalf("Error reading config file, %s", err)
 	}
-	err := v.Unmarshal(&Config)
+
+	err := viper.Unmarshal(&Config)
 	if err != nil {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 
+	log.Printf("%v", Config)
 }

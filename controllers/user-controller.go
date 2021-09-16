@@ -72,3 +72,32 @@ func CreateAccountHandler(c *gin.Context) {
 	c.JSON(http.StatusCreated, createdUser)
 
 }
+
+func GetUserInfoHandler(c *gin.Context) {
+
+	userEmail := c.GetHeader("email")
+
+	if userEmail == "" {
+		c.JSON(http.StatusForbidden, utils.GetErrorMessage("User is not existed"))
+		return
+	}
+
+	userInfo, err := models.GetUserInfo(userEmail)
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, utils.GetErrorMessage("User is not existed"))
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.GetSuccessMessage(userInfo))
+}
+
+func GetAllUserHandler(c *gin.Context) {
+	userList, err := models.GetAllUser()
+
+	if err != nil {
+		c.JSON(http.StatusForbidden, utils.GetErrorMessage(err.Error()))
+		return
+	}
+	c.JSON(http.StatusOK, utils.GetSuccessMessage(userList))
+}

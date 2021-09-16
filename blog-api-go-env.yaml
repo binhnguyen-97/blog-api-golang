@@ -1,0 +1,9 @@
+port: ':3000'
+mongodb:
+  url: ''
+  database: ''
+collections:
+  article: 'article'
+  writer: 'writer'
+  user: 'user'
+jwt_token: ''

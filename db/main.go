@@ -15,7 +15,7 @@ var DB *mongo.Client
 func ConnectToDatabase(ctx context.Context) {
 	var err error
 
-	DB, err = mongo.Connect(ctx, options.Client().ApplyURI(config.Config.MONGODB_URL))
+	DB, err = mongo.Connect(ctx, options.Client().ApplyURI(config.Config.MONGODB.URL))
 
 	if err != nil {
 		panic(err)
@@ -37,17 +37,17 @@ func Disconnect(ctx context.Context) {
 }
 
 func blogBatabase() *mongo.Database {
-	return DB.Database(config.Config.DATABASE_NAME)
+	return DB.Database(config.Config.MONGODB.DATABASE)
 }
 
 func ArticleCollection() *mongo.Collection {
-	return blogBatabase().Collection(config.Config.ARTICLE_COLLECTION_NAME)
+	return blogBatabase().Collection(config.Config.COLLECTIONS.ARTICLE)
 }
 
 func WritterCollection() *mongo.Collection {
-	return blogBatabase().Collection(config.Config.WRITER_COLLECTION_NAME)
+	return blogBatabase().Collection(config.Config.COLLECTIONS.WRITER)
 }
 
 func UserCollection() *mongo.Collection {
-	return blogBatabase().Collection(config.Config.USER_COLLECTION_NAME)
+	return blogBatabase().Collection(config.Config.COLLECTIONS.USER)
 }

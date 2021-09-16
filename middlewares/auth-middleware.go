@@ -53,6 +53,9 @@ func AuthMiddleware(rolesAccepted []string) gin.HandlerFunc {
 			}
 
 			if hasPermission {
+				requestEmail := fmt.Sprintf("%v", claims["email"])
+
+				c.Request.Header.Add("email", requestEmail)
 				c.Next()
 				return
 			}
@@ -61,6 +64,7 @@ func AuthMiddleware(rolesAccepted []string) gin.HandlerFunc {
 			c.Abort()
 		}
 
-		c.Next()
+		c.JSON(http.StatusForbidden, utils.GetErrorMessage("Not Authorized"))
+		c.Abort()
 	}
 }

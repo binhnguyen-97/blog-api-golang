@@ -17,7 +17,11 @@ func InitV1Router(r *gin.Engine) *gin.Engine {
 	privateRoute.PUT("/article/:id", middlewares.AuthMiddleware(utils.ACCEPT_ALL_ROLES), controllers.PutArticleHandler)
 	privateRoute.DELETE("/article/:id", middlewares.AuthMiddleware(utils.ACCEPT_MAINTAINER_ROLES), controllers.DeleteArticleHandler)
 
+	privateRoute.GET("/users", middlewares.AuthMiddleware(utils.ACCEPT_ADMIN_ROLES), controllers.GetAllUserHandler)
+	privateRoute.GET("/user/me", middlewares.AuthMiddleware(utils.ACCEPT_ALL_ROLES), controllers.GetUserInfoHandler)
 	privateRoute.POST("/user/create", middlewares.AuthMiddleware(utils.ACCEPT_ADMIN_ROLES), controllers.CreateAccountHandler)
+
+	privateRoute.GET("/writers", middlewares.AuthMiddleware(utils.ACCEPT_ALL_ROLES), controllers.GetAllWriterHandler)
 
 	publicRoute := v1Group.Group("public")
 
