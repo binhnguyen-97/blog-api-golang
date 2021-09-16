@@ -22,5 +22,5 @@ func main() {
 
 	defer db.Disconnect(ctx)
 
-	routers.InitRouter().Run(config.Config.PORT)
+	routers.InitRouter().Run(config.Config.Port)
 }

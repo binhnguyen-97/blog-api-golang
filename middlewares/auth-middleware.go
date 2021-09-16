@@ -24,7 +24,7 @@ func AuthMiddleware(rolesAccepted []string) gin.HandlerFunc {
 			return
 		}
 
-		var mySigningKey = []byte(config.Config.JWT_SECRET_KEY)
+		var mySigningKey = []byte(config.Config.JWT.SecretKey)
 		token, err := jwt.Parse(jwtToken[1], func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("there was an error in parsing token")

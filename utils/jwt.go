@@ -9,14 +9,14 @@ import (
 )
 
 func GenerateJWT(email, role string) (string, error) {
-	var mySigningKey = []byte(config.Config.JWT_SECRET_KEY)
+	var mySigningKey = []byte(config.Config.JWT.SecretKey)
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 
 	claims["authorized"] = true
 	claims["email"] = email
 	claims["role"] = role
-	claims["exp"] = time.Now().Add(time.Hour * 240).Unix()
+	claims["exp"] = time.Now().Add(config.Config.JWT.ExpireTime).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
 

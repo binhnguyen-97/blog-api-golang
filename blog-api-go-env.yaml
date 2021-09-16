@@ -1,9 +1,11 @@
 port: ':3000'
 mongodb:
-  url: ''
-  database: ''
+  url: 'url'
+  database: 'database name'
 collections:
   article: 'article'
   writer: 'writer'
   user: 'user'
-jwt_token: ''
+jwt:
+  secret_key: 'secret'
+  expire_time: 5h

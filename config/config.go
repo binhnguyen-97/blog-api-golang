@@ -3,22 +3,26 @@ package config
 import (
 	"log"
 	"strings"
+	"time"
 
 	"github.com/spf13/viper"
 )
 
 type configStruct struct {
-	PORT    string `mapstructure:"port"`
-	MONGODB struct {
+	Port    string `mapstructure:"port"`
+	MongoDb struct {
 		URL      string `mapstructure:"url"`
-		DATABASE string `mapstructure:"database"`
+		Database string `mapstructure:"database"`
 	} `mapstructure:"mongodb"`
-	COLLECTIONS struct {
-		ARTICLE string `mapstructure:"article"`
-		WRITER  string `mapstructure:"writer"`
-		USER    string `mapstructure:"user"`
+	Collections struct {
+		Article string `mapstructure:"article"`
+		Writer  string `mapstructure:"writer"`
+		Uer     string `mapstructure:"user"`
 	} `mapstructure:"collections"`
-	JWT_SECRET_KEY string `mapstructure:"jwt_token"`
+	JWT struct {
+		SecretKey  string        `mapstructure:"secret_key"`
+		ExpireTime time.Duration `mapstructure:"expire_time"`
+	}
 }
 
 var Config configStruct
@@ -28,6 +32,7 @@ func GetVariableConfig() {
 	viper.SetConfigName("blog-api-go-env")
 	viper.AddConfigPath("./")
 	viper.AddConfigPath("../")
+	viper.AddConfigPath("/Users/binhnguyen/WorkSpace/Persional/")
 	viper.SetConfigType("yaml")
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
@@ -42,5 +47,6 @@ func GetVariableConfig() {
 		log.Fatalf("unable to decode into struct, %v", err)
 	}
 
-	log.Printf("%v", Config)
+	log.Print(Config)
+
 }
