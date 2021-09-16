@@ -1,9 +1,10 @@
 package types
 
 type InsertArticleRequest struct {
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	Author      string `json:"author"`
+	Title            string `json:"title" binding:"required"`
+	ShortDescription string `json:"shortDescription" binding:"required"`
+	Author           string `json:"author" binding:"required"`
+	Content          string `json:"content" binding:"required"`
 }
 
 type SignInRequest struct {

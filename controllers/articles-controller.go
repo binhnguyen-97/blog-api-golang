@@ -51,7 +51,7 @@ func PostArticleHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage("Invaid request body"))
 	}
 
-	result, err := models.AddNewArticle(articleRequest.Title, articleRequest.Description, articleRequest.Author)
+	result, err := models.AddNewArticle(articleRequest.Title, articleRequest.ShortDescription, articleRequest.Author, articleRequest.Content)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage(err.Error()))
@@ -74,8 +74,9 @@ func PutArticleHandler(c *gin.Context) {
 	err := models.UpdateArticle(
 		articleId,
 		updateArticleRequest.Title,
-		updateArticleRequest.Description,
+		updateArticleRequest.ShortDescription,
 		updateArticleRequest.Author,
+		updateArticleRequest.Content,
 	)
 
 	if err != nil {

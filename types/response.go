@@ -7,12 +7,13 @@ import (
 )
 
 type ArticleResp struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Title       string             `bson:"title" json:"title"`
-	Author      Writer             `bson:"author" json:"author"`
-	Description string             `bson:"description" json:"description"`
-	CreatedAt   time.Time          `bson:"createdAt" json:"createdAt"`
-	UpdateAt    time.Time          `bson:"updatedAt" json:"updatedAt"`
+	ID               primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	Title            string             `bson:"title" json:"title"`
+	Author           Writer             `bson:"author" json:"author"`
+	ShortDescription string             `bson:"short_description" json:"shortDescription"`
+	Content          string             `bson:"content" json:"content"`
+	CreatedAt        time.Time          `bson:"createdAt" json:"createdAt"`
+	UpdateAt         time.Time          `bson:"updatedAt" json:"updatedAt"`
 }
 
 type ListArticleResp struct {

@@ -74,7 +74,7 @@ func GetArticleDetail(id string) ([]types.ArticleResp, error) {
 	return results, nil
 }
 
-func AddNewArticle(title string, description string, author string) (interface{}, error) {
+func AddNewArticle(title string, shortDescription string, author string, content string) (interface{}, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	defer cancel()
@@ -87,11 +87,12 @@ func AddNewArticle(title string, description string, author string) (interface{}
 	}
 
 	article := types.Article{
-		Title:       title,
-		Description: description,
-		Author:      authorId,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		Title:            title,
+		ShortDescription: shortDescription,
+		Content:          content,
+		Author:           authorId,
+		CreatedAt:        time.Now(),
+		UpdatedAt:        time.Now(),
 	}
 
 	insertResult, err := articleCollection.InsertOne(ctx, article)
@@ -130,7 +131,7 @@ func DeleteArticle(id string) error {
 	return nil
 }
 
-func UpdateArticle(id string, title string, description string, author string) error {
+func UpdateArticle(id string, title string, shortDescription string, author string, content string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 
 	defer cancel()
@@ -153,7 +154,8 @@ func UpdateArticle(id string, title string, description string, author string) e
 			Key: "$set",
 			Value: bson.M{
 				"title":       title,
-				"description": description,
+				"description": shortDescription,
+				"content":     content,
 				"author":      authorId,
 				"updatedAt":   time.Now(),
 			},
