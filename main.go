@@ -27,5 +27,5 @@ func main() {
 
 	defer cache.Close()
 
-	routers.InitRouter().Run(config.Config.Port)
+	routers.InitRouter().Run(":" + config.Config.Port)
 }
