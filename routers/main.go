@@ -11,7 +11,7 @@ func InitRouter() *gin.Engine {
 	router := gin.New()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://blog-admin.thebidufamily.com", "https://blog.thebidufamily.com"},
 		AllowMethods:     []string{"PUT", "GET", "PATH", "OPTIONS", "POST", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
