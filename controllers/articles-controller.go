@@ -98,3 +98,14 @@ func DeleteArticleHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusAccepted, utils.GetSuccessMessage("Deleted successfully"))
 }
+
+func GetHighlightArticlesHandler(c *gin.Context) {
+	data, err := models.GetArticles(5, 0)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.GetSuccessMessage(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, types.ListArticleResp{Status: "success", Data: data})
+}

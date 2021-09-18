@@ -28,6 +28,8 @@ func InitV1Router(r *gin.Engine) *gin.Engine {
 	publicRoute.GET("/articles", controllers.GetAllArticlesHandler)
 	publicRoute.GET("/article/:id", controllers.GetArticleDetailHandler)
 
+	publicRoute.GET("/articles/highlight", controllers.GetHighlightArticlesHandler)
+
 	publicRoute.POST("/user", controllers.SignInHandler)
 
 	return r
