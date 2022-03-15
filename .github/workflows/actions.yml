@@ -1,4 +1,4 @@
-name: CI/CD
+name: Project CI/CD
 on:
   push:
     branches: [$default-branch]
